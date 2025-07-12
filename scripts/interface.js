@@ -103,7 +103,7 @@ function updateList() {
 			amountText.innerHTML = `${listContainer.children.length} task${plural}`;
 		}
 	} else {
-		console.error("Error ! Cannot find any valid list container element !");
+		console.error("Error! Cannot find any valid list container element!");
 	}
 }
 
@@ -196,7 +196,7 @@ function newTaskOverlay() {
 		const taskDesc = document.getElementById("TaskDesc").value;
 		if (taskTitle == "" || taskDesc == "") {
 			//If the title/description is empty, we do not create our Task's object.
-			alert("All fields need to be filled !");
+			alert("All fields need to be filled!");
 		} else {
 			//If the title/description is valid, we create a new Task object and we add it to our local storage using our "addTaskToStorage" function.
 			const newTask = new Task(taskTitle, taskDesc);
