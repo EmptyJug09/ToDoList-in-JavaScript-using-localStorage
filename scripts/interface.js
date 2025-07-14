@@ -1,215 +1,111 @@
-const listContainer = document.getElementById("listContainer");
+let selectedFilter = "All";
 
-/**
- * Initialize our interface when our page is fully loaded
- */
+function Init() {
+  initInterface();
+
+  const clearBtn = document.getElementById('clearAll');
+  clearBtn.addEventListener('click', () => {
+    const taskCount = parseInt(localStorage.getItem("task_amount") || "0");
+
+    // Remove all tasks from localStorage
+    for (let i = 0; i < taskCount; i++) {
+      localStorage.removeItem(`task_${i}`);
+    }
+
+    localStorage.setItem("task_amount", "0");
+
+    // Clear UI elements
+    document.getElementById("listContainer").innerHTML = "";
+    document.getElementById("taskAmount").innerText = "You have no task(s)...";
+
+    updateList(); // Refresh empty list
+  });
+}
+
 function initInterface() {
-	updateFilters();
-	updateList();
+  updateFilters(document.getElementById("All"));
+  updateList();
 }
 
-/**
- * Update our tasks list using filters when any action is performed.
- */
+function updateFilters(target) {
+  selectedFilter = target.id;
+
+  const buttons = document.getElementById("filtersContainer").children;
+  for (let btn of buttons) {
+    btn.classList.remove("buttonSelected");
+  }
+
+  target.classList.add("buttonSelected");
+  updateList();
+}
+
 function updateList() {
-	//Check if the tasks container element exists in our html (it should anyway).
-	if (listContainer != undefined) {
-		//If the container exists, we clear it's html content.
-		listContainer.innerHTML = "";
-		//We then obtain the amount of tasks that exist in our local storage.
-		const taskAmount = parseInt(localStorage.getItem("task_amount"));
-		//Our task amount html text element
-		const amountText = document.getElementById("taskAmount");
+  const container = document.getElementById("listContainer");
+  container.innerHTML = "";
+  const taskAmount = parseInt(localStorage.getItem("task_amount")) || 0;
+  const taskText = document.getElementById("taskAmount");
 
-		if (taskAmount == 0) {
-			amountText.innerHTML = `You have no task(s)...`;
-			return;
-		}
+  if (taskAmount === 0) {
+    taskText.textContent = "You have no task(s)...";
+    return;
+  }
 
-		for (let i = 0; i < taskAmount; i++) {
-			const CURRENT_TASK = localStorage.getItem(`task_${i}`);
+  let shownCount = 0;
 
-			if (selectedFilter == filters[0].replace(" ", "")
-				||
-				(selectedFilter == filters[1].replace(" ", "") && Object.entries(JSON.parse(CURRENT_TASK))[2][1] == false)
-				||
-				(selectedFilter == filters[2].replace(" ", "") && Object.entries(JSON.parse(CURRENT_TASK))[2][1] == true)
-			) {
+  for (let i = 0; i < taskAmount; i++) {
+    const taskData = localStorage.getItem(`task_${i}`);
+    if (!taskData) continue;
 
-				//Then, for each task that matches with our selected filter, we create a new element and we append it to our "listContainer" element.
+    const task = JSON.parse(taskData);
+    const isDone = task.done;
 
-				//It's probably a terrible way to create our elements, let me know if you have better ways.
-				listContainer.appendChild(
-					Object.assign(document.createElement("div"), {
-						className: "taskElement",
-						id: `task_${i}`
-					})
-				);
+    if (
+      selectedFilter === "All" ||
+      (selectedFilter === "Active" && !isDone) ||
+      (selectedFilter === "Completed" && isDone)
+    ) {
+      shownCount++;
 
-				const TASK_ELEM = document.getElementById(`task_${i}`);
-				TASK_ELEM.appendChild(
-					Object.assign(document.createElement("button"), {
-						id: `task_${i}_body`,
-						className: "taskButton"
-					})
-				);
+      const wrapper = document.createElement("div");
+      wrapper.className = "taskElement";
+      if (isDone) wrapper.classList.add("taskDone");
+      wrapper.id = `task_${i}`;
 
-				const TASK_BODY = document.getElementById(`task_${i}_body`);
-				TASK_BODY.appendChild(
-					Object.assign(document.createElement("input"), {
-						type: "checkbox",
-						checked: Object.entries(JSON.parse(CURRENT_TASK))[2][1],
-					})
-				);
-				TASK_BODY.appendChild(
-					Object.assign(document.createElement("h2"), {
-						innerHTML: Object.entries(JSON.parse(CURRENT_TASK))[0][1]
-					})
-				)
-				TASK_BODY.appendChild(
-					Object.assign(document.createElement("p"), {
-						innerHTML: Object.entries(JSON.parse(CURRENT_TASK))[1][1]
-					})
-				)
+      const taskButton = document.createElement("button");
+      taskButton.className = "taskButton";
+      taskButton.id = `task_${i}_body`;
 
-				TASK_ELEM.appendChild(
-					Object.assign(document.createElement("button"), {
-						className: "removeButton",
-						id: `task_${i}_remove`
-					})
-				).appendChild(
-					Object.assign(document.createElement("img"), {
-						src: "resources/bin.png"
-					})
-				);
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.checked = isDone;
 
-				const deleteButton = document.getElementById(`task_${i}_remove`);
-				deleteButton.onclick = function () {
-					deleteTask(this.id.toString().replace("_remove", ""))
-				};
+      const title = document.createElement("h2");
+      title.textContent = task.title;
 
-				TASK_BODY.onclick = function () {
-					changeTaskState(this.id.toString().replace("_body", ""))
-				};
+      const desc = document.createElement("p");
+      desc.textContent = task.description;
 
-				if (Object.entries(JSON.parse(CURRENT_TASK))[2][1] == true) {
-					TASK_ELEM.classList.add("taskDone")
-				}
-			}
-			let plural = "";
-			if (listContainer.children.length > 1) {
-				plural = "s";
-			}
-			amountText.innerHTML = `${listContainer.children.length} task${plural}`;
-		}
-	} else {
-		console.error("Error! Cannot find any valid list container element!");
-	}
+      taskButton.appendChild(checkbox);
+      taskButton.appendChild(title);
+      taskButton.appendChild(desc);
+
+      const removeButton = document.createElement("button");
+      removeButton.className = "removeButton";
+      removeButton.id = `task_${i}_remove`;
+      const binIcon = document.createElement("img");
+      binIcon.src = "resources/bin.png"; // replace if missing
+      removeButton.appendChild(binIcon);
+
+      taskButton.onclick = () => changeTaskState(`task_${i}`);
+      removeButton.onclick = () => deleteTask(`task_${i}`);
+
+      wrapper.appendChild(taskButton);
+      wrapper.appendChild(removeButton);
+      container.appendChild(wrapper);
+    }
+  }
+
+  taskText.textContent = shownCount === 0
+    ? "You have no task(s)..."
+    : `${shownCount} task${shownCount > 1 ? "s" : ""}`;
 }
-
-/**
- * This function updates the selected filter when any filter button is pressed by the user (Default: **ALL**)
- * @param {*} targetButton This parameter **NEED** to be a button containing a filter present in our filters list array ("*filters*") as an **ID without spaces**.
- */
-function updateFilters(
-	targetButton = document.getElementById("filtersContainer").children[0]
-) {
-	//We obtain our button's ID, that is actually our filter's name WITHOUT SPACE.
-	selectedFilter = targetButton.id;
-
-	const CONTAINER = document.getElementById("filtersContainer");
-	for (let child of CONTAINER.children) {
-		//First, we remove the "buttonSelected" class of each button.
-		child.classList.remove("buttonSelected");
-	}
-	let activeButton = document.getElementById(selectedFilter);
-	//Then, we add it back to the selected filter's button
-	activeButton.classList.add("buttonSelected");
-	//Finally we update our list.
-	updateList();
-}
-
-/**
- * This function creates an overlay with different textboxes inputs that allow our user to create a new task
- */
-function newTaskOverlay() {
-	document.body
-		.appendChild(
-			Object.assign(document.createElement("div"), {
-				id: "Popup_Background",
-			})
-		)
-		.appendChild(
-			Object.assign(document.createElement("div"), {
-				id: "Popup",
-			})
-		);
-	const Popup = document.getElementById("Popup");
-	Popup.appendChild(
-		Object.assign(document.createElement("h2"), {
-			id: "Popup_Title",
-			innerHTML: "Create a new task",
-		})
-	);
-	Popup.appendChild(
-		Object.assign(document.createElement("div"), {
-			class: "Popup_Description",
-			innerHTML: "Task title",
-		})
-	);
-	Popup.appendChild(
-		Object.assign(document.createElement("input"), {
-			type: "text",
-			id: "TaskTitle",
-			minlength: "4",
-			maxlength: "40",
-		})
-	);
-	Popup.appendChild(
-		Object.assign(document.createElement("div"), {
-			class: "Popup_Description",
-			innerHTML: "Description",
-		})
-	);
-	Popup.appendChild(
-		Object.assign(document.createElement("input"), {
-			type: "text",
-			id: "TaskDesc",
-			minlength: "4",
-			maxlength: "2000",
-		})
-	);
-	Popup.appendChild(
-		Object.assign(document.createElement("button"), {
-			className: "buttonSelected",
-			id: "createTaskButton",
-		})
-	).appendChild(
-		Object.assign(document.createElement("h3"), {
-			innerHTML: "Create",
-		})
-	);
-
-	const createTaskButton = document.getElementById("createTaskButton");
-	createTaskButton.addEventListener("click", () => {
-		const taskTitle = document.getElementById("TaskTitle").value;
-		const taskDesc = document.getElementById("TaskDesc").value;
-		if (taskTitle == "" || taskDesc == "") {
-			//If the title/description is empty, we do not create our Task's object.
-			alert("All fields need to be filled!");
-		} else {
-			//If the title/description is valid, we create a new Task object and we add it to our local storage using our "addTaskToStorage" function.
-			const newTask = new Task(taskTitle, taskDesc);
-			addTaskToStorage(newTask);
-		}
-	});
-
-	const clearBtn = document.getElementById('clearAll');
-clearBtn.addEventListener('click', () => {
-  // Clear the list from the page
-  document.getElementById('taskList').innerHTML = "";
-  // Clear from localStorage
-  localStorage.clear();
-});
-}
-

@@ -1,37 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1">
-    <meta content="A simple ToDoList using Javascript and local storage !" name="description">
-
-    <title>My local ToDoList !</title>
-    <link rel="icon" type="image/png" href="resources/gwp_logo_uni.png"/>
-
-    <link rel="stylesheet" href="styles/variables.css">
-    <link rel="stylesheet" href="styles/native.css">
-    <link rel="stylesheet" href="styles/customClasses.css">
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My local ToDoList!</title>
 </head>
 <body onload="Init()">
-    <header>
-        <h1>My local To Do List</h1>
-    </header>
-    <main>
-        <section>
-            <div id="filtersContainer">
-            </div>
-            <p id="taskAmount">You have no task(s)...</p>
-            <button class="buttonSelected" onclick="newTaskOverlay()">Add a new task</button>
-            <button id="clearAll" style="background-color: blue; color: white;">Clear All</button>
+  <header>
+    <h1>My local To Do List</h1>
+  </header>
+  <main>
+    <section>
+      <!-- Filter Buttons -->
+      <div id="filtersContainer">
+        <button id="All" class="buttonSelected" onclick="updateFilters(this)">All</button>
+        <button id="Active" onclick="updateFilters(this)">Active</button>
+        <button id="Completed" onclick="updateFilters(this)">Completed</button>
+      </div>
 
-        </section>
-        <ol id="listContainer">
-        </ol>
-    </main>
-    <script src="scripts/Task.js"></script>
-    <script src="scripts/localStorage.js"></script>
-    <script src="scripts/interface.js"></script>
-    <script src="scripts/main.js"></script>
+      <p id="taskAmount">You have no task(s)...</p>
+
+      <!-- Add new task button calls newTaskOverlay -->
+      <button class="buttonSelected" onclick="newTaskOverlay()">Add a new task</button>
+
+      <!-- Clear All button -->
+      <button id="clearAll" style="background-color: blue; color: white;">Clear All</button>
+    </section>
+
+    <!-- Task list -->
+    <ol id="listContainer"></ol>
+  </main>
+
+  <!-- JS -->
+  <script src="scripts/Task.js"></script>
+  <script src="scripts/localStorage.js"></script>
+  <script src="scripts/interface.js"></script> 
+  <script src="scripts/main.js"></script> 
+
+  <!-- 
+    Make sure your script files have:
+    Task.js (Task class)
+    localStorage.js (addTaskToStorage, deleteTask, changeTaskState)
+    interface.js (Init, updateFilters, updateList, etc)
+    main.js (newTaskOverlay and any extras)
+  -->
 </body>
 </html>
