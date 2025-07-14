@@ -15,7 +15,7 @@
 </head>
 <body onload="Init()">
     <header>
-        <h1>My local ToDoList</h1>
+        <h1>My local To Do List</h1>
     </header>
     <main>
         <section>
@@ -23,11 +23,12 @@
             </div>
             <p id="taskAmount">You have no task(s)...</p>
             <button class="buttonSelected" onclick="newTaskOverlay()">Add a new task</button>
+            <button id="clearAll" style="background-color: blue; color: white;">Clear All</button>
+
         </section>
         <ol id="listContainer">
         </ol>
     </main>
-
     <script src="scripts/Task.js"></script>
     <script src="scripts/localStorage.js"></script>
     <script src="scripts/interface.js"></script>

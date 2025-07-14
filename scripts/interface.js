@@ -203,5 +203,13 @@ function newTaskOverlay() {
 			addTaskToStorage(newTask);
 		}
 	});
+
+	const clearBtn = document.getElementById('clearAll');
+clearBtn.addEventListener('click', () => {
+  // Clear the list from the page
+  document.getElementById('taskList').innerHTML = "";
+  // Clear from localStorage
+  localStorage.clear();
+});
 }
 
