@@ -1,131 +1,247 @@
-.buttonSelected {
-    background-color: var(--color-main);
-    color: white;
+:root {
+  --color-main: #0075ff;
+  --color-hover: #e0efff;  /* Soft blue hover */
+  --color-border-inactive: #ccc;
 }
 
+/* Layout + Typography */
+body {
+  background-color: #f4f6f8;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Header */
+header h1 {
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* Main Container */
+main {
+  background-color: white;
+  width: 100%;
+  max-width: 600px;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Task Count */
+#taskAmount {
+  text-align: center;
+  font-size: 1.1rem;
+  margin-bottom: 15px;
+  color: #555;
+}
+
+/* Filter Tabs */
+#filtersContainer {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 15px;
+  gap: 10px;
+}
+
+#filtersContainer button {
+  padding: 8px 16px;
+  border: 2px solid var(--color-main);
+  border-radius: 8px;
+  background-color: white;
+  color: var(--color-main);
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+#filtersContainer button:hover {
+  background-color: var(--color-hover);
+  color: var(--color-main);
+}
+
+#filtersContainer .buttonSelected {
+  background-color: var(--color-main);
+  color: white;
+  border: 2px solid var(--color-main);
+  box-shadow: 0 0 5px rgba(0, 117, 255, 0.3);
+}
+
+/* Action Buttons */
+button.buttonSelected {
+  padding: 10px 16px;
+  background-color: var(--color-main);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  margin-top: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+button.buttonSelected:hover {
+  background-color: #005fd0;
+}
+
+#clearAll {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-weight: bold;
+  margin-top: 10px;
+  margin-left: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+#clearAll:hover {
+  background-color: #c0392b;
+}
+
+/* Task List Container */
+#listContainer {
+  margin-top: 15px;
+}
+
+/* Task Element Style */
 .taskElement {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 5px;
-    transition: 200ms;
-    background-color: transparent;
-    border: 1px solid var(--color-border-inactive);
-    border-radius: 8px;
-    width: 100%;
-    .taskButton {
-        display: flex;
-        align-items: baseline;
-        border: 0px;
-        margin: 0px;
-        border-radius: 7px;
-        width: 100%;
-        text-align: left;
-        flex-wrap: wrap;
-        h2 {
-            padding-left: 5px;
-            padding-right: 5px;
-        }
-    }
-}
-
-.removeButton {
-    background-color: rgba(255,0,0,1);
-    display: flex;
-    padding: 2px;
-    color: white;
-    height: fit-content;
-    margin: 8px;
-    img {
-        width: 25px;
-        height: 25px;
-    }
-}
-.removeButton:hover {
-    background-color: rgba(255,0,0,0.5);
-}
-
-#filtersContainer > button {
-    border: 0 solid;
-    border-radius: 0px;
-    color: var(--color-main);
-    border-top: 1px solid var(--color-main);
-    border-bottom: 1px solid var(--color-main);
-    border-left: 1px solid var(--color-main);
-}
-#filtersContainer > .buttonSelected {
-    color: white;
-}
-#filtersContainer > button:hover {
-    color: white;
-}
-#filtersContainer > button:first-child {
-    border-radius: 8px 0px 0px 8px;
-    border-left: 1px solid var(--color-main);
-
-}
-#filtersContainer > button:last-child {
-    border-radius: 0px 8px 8px 0px;
-    border-right: 1px solid var(--color-main);
-}
-
-#Popup_Background {
-    position: absolute;
-    height: 100vh;
-    width: 100vw;
-    background-color: rgba(0, 0, 0, 0.45);
-    z-index: 1000;
-    top: 0px;
-    left: 0px;
-    transition-duration: 200ms;
-
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    -moz-backdrop-filter: blur(15px);
-    -o-backdrop-filter: blur(15px);
-
-    display: flex;
-    align-content: center;
-    flex-wrap: nowrap;
-    justify-content: center;
-    align-items: center;
-}
-#Popup {
-    transition-duration: 200ms;
-
-    width: auto;
-    height: auto;
-
-    border: 1px solid var(--color-main);
-    background-color: rgba(49, 49, 49, 0.7);
-    border-radius: 8px;
-
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    -moz-backdrop-filter: blur(20px);
-    -o-backdrop-filter: blur(20px);
-
-    padding-left: 5px;
-    padding-right: 5px;
-    color: rgb(205 199 195);
-
-    display: flex;
-    flex-direction: column;
-}
-#Popup_Title_Layer {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    padding-top: 5px;
-    padding-bottom: 5px;
-}
-.Popup_Description {
-    color: rgb(205 199 195);
-}
-#createTaskButton {
-    margin-top: 5px;
-    margin-bottom: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fdfdfd;
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  transition: background-color 0.2s;
 }
 
 .taskDone {
-    background-color: var(--color-hover);
+  background-color: #e0f0ff;
+  opacity: 0.7;
+  text-decoration: line-through;
+}
+
+/* Task Button */
+.taskButton {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: none;
+  border: none;
+  flex-grow: 1;
+  cursor: pointer;
+}
+
+.taskButton h2 {
+  font-size: 1rem;
+  margin: 0;
+  color: #333;
+}
+
+.taskButton p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #777;
+}
+
+/* Checkbox */
+.taskButton input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-main);
+  pointer-events: none;
+}
+
+/* Remove Button */
+.removeButton {
+  background-color: #ff5e5e;
+  border: none;
+  padding: 6px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.removeButton:hover {
+  background-color: #e03d3d;
+}
+
+.removeButton img {
+  width: 20px;
+  height: 20px;
+  filter: invert(100%);
+}
+
+/* Popup Overlay */
+#Popup_Background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+/* Popup Modal */
+#Popup {
+  background-color: white;
+  padding: 20px 25px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 400px;
+  border: 2px solid var(--color-main);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+  color: #333;
+}
+
+#Popup h2 {
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+
+.Popup_Description {
+  font-weight: 600;
+  margin-top: 10px;
+  margin-bottom: 4px;
+}
+
+#Popup input[type="text"] {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+/* Create Button */
+#createTaskButton {
+  width: 100%;
+  background-color: var(--color-main);
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+#createTaskButton:hover {
+  background-color: #005fd0;
 }
