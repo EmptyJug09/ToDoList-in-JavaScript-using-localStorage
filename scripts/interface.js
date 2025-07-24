@@ -42,8 +42,9 @@ function updateFilters(target) {
 function updateList() {
   const container = document.getElementById("listContainer");
   container.innerHTML = "";
-  const taskAmount = parseInt(localStorage.getItem("task_amount")) || 0;
+
   const taskText = document.getElementById("taskAmount");
+  const taskAmount = parseInt(localStorage.getItem("task_amount")) || 0;
 
   if (taskAmount === 0) {
     taskText.textContent = "You have no task(s)...";
@@ -56,9 +57,10 @@ function updateList() {
     const taskData = localStorage.getItem(`task_${i}`);
     if (!taskData) continue;
 
-    const task = JSON.parse(taskData);
-    const isDone = task.done;
+    const taskObj = JSON.parse(taskData);
+    const isDone = taskObj.done;
 
+    // Filter logic
     if (
       selectedFilter === "All" ||
       (selectedFilter === "Active" && !isDone) ||
@@ -80,22 +82,42 @@ function updateList() {
       checkbox.checked = isDone;
 
       const title = document.createElement("h2");
-      title.textContent = task.title;
+      title.textContent = taskObj.title;
 
       const desc = document.createElement("p");
-      desc.textContent = task.description;
+      desc.textContent = taskObj.description;
 
       taskButton.appendChild(checkbox);
       taskButton.appendChild(title);
       taskButton.appendChild(desc);
 
+      // ✅ Add due date if exists
+      if (taskObj.dueDate) {
+        const due = document.createElement("p");
+        due.innerHTML = `<strong>Due:</strong> ${taskObj.dueDate.replace("T", " ")}`;
+        taskButton.appendChild(due);
+      }
+
+      // ✅ Add attachment if exists
+      if (taskObj.fileName && taskObj.fileData) {
+        const attachment = document.createElement("a");
+        attachment.href = taskObj.fileData;
+        attachment.download = taskObj.fileName;
+        attachment.textContent = `Attachment: ${taskObj.fileName}`;
+        attachment.style.display = "block";
+        attachment.style.marginTop = "5px";
+        taskButton.appendChild(attachment);
+      }
+
+      // Actions
       const removeButton = document.createElement("button");
       removeButton.className = "removeButton";
       removeButton.id = `task_${i}_remove`;
       const binIcon = document.createElement("img");
-      binIcon.src = "resources/bin.png"; // replace if missing
+      binIcon.src = "resources/bin.png";
       removeButton.appendChild(binIcon);
 
+      // Handlers
       taskButton.onclick = () => changeTaskState(`task_${i}`);
       removeButton.onclick = () => deleteTask(`task_${i}`);
 
